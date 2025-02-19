@@ -1,0 +1,92 @@
+uploads
+# Ignore .NET Core build results
+bin/
+obj/
+
+# Ignore user-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Ignore Rider project files
+.idea/
+
+# Ignore Visual Studio Code workspace settings
+.vscode/
+
+# Ignore build output
+out/
+
+# Ignore NuGet packages
+*.nupkg
+*.snupkg
+
+# Ignore logs
+*.log
+
+# Ignore temporary files
+*.tmp
+*.temp
+
+# Ignore compiled DLLs and PDBs
+*.dll
+*.pdb
+
+# Ignore coverage reports
+coverage/
+*.coverage
+*.coveragexml
+*.cov
+*.gcov
+*.gcda
+*.gcno
+*.lcov
+*.clover
+*.cobertura
+*.jacoco
+*.opencover
+*.coveralls
+*.sonarqube
+*.codecov
+*.codeclimate
+*.teamcity
+*.travis
+*.circleci
+*.appveyor
+*.azurepipelines
+*.bitbucket
+*.gitlab
+*.jenkins
+*.bamboo
+*.wercker
+*.shippable
+*.drone
+*.buddy
+*.semaphore
+*.buildkite
+*.codefresh
+*.bitrise
+*.scrutinizer
+*.codacy
+*.codefactor
+*.codebeat
+*.codeclimate
+*.coverity
+*.sonarcloud
+*.sonar
+*.sonarqube
+*.sonarcloud
+*.sonar
+*.sonarqube
+*.sonarcloud
+*.sonar
+*.sonarqube
+*.sonarcloud
+*.sonar
+*.sonarqube
+*.sonarcloud
+*.sonar
+*.sonarqube
+*.sonarcloud
+*.sonar

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .glassmorphism {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- Header Section -->
+    <header class="bg-white shadow-md">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <button class="text-blue-600 font-semibold">
+                <i data-lucide="arrow-left" class="w-5 h-5 inline-block mr-1"></i>
+                Back
+            </button>
+            <h1 class="text-2xl font-bold text-gray-800">My Bookings</h1>
+            <div class="relative">
+                <select class="appearance-none bg-blue-50 border border-blue-300 text-blue-700 py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-blue-500">
+                    <option>All Bookings</option>
+                    <option>Pending</option>
+                    <option>Approved</option>
+                    <option>Completed</option>
+                    <option>Cancelled</option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-blue-700">
+                    <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Booking List Section -->
+    <main class="container mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Booking Card (Repeat this structure for each booking) -->
+            <div class="glassmorphism p-6 transition-all duration-300 hover:shadow-lg">
+                <div class="flex items-center mb-4">
+                    <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="Worker" class="w-20 h-20 rounded-full mr-4">
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-800">John Doe - Plumber</h2>
+                        <p class="text-sm text-gray-500">#BOOK12345</p>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <p class="text-gray-600">
+                            <i data-lucide="calendar" class="w-4 h-4 inline-block mr-1"></i>
+                            May 15, 2023
+                        </p>
+                        <p class="text-gray-600">
+                            <i data-lucide="clock" class="w-4 h-4 inline-block mr-1"></i>
+                            2:00 PM
+                        </p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-lg font-bold text-blue-600">₹1,025</p>
+                        <p class="text-xs text-gray-500">Incl. ₹25 Admin Charge</p>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center mb-4">
+                    <span class="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-sm font-semibold">Pending</span>
+                    <button class="text-blue-600 hover:text-blue-800 transition-colors duration-300">
+                        <i data-lucide="message-circle" class="w-5 h-5 inline-block mr-1"></i>
+                        Message
+                    </button>
+                </div>
+                <div class="flex justify-between">
+                    <button class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors duration-300">Cancel Booking</button>
+                    <button class="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition-colors duration-300">View Details</button>
+                </div>
+            </div>
+            <!-- Repeat the above card structure for more bookings -->
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="fixed bottom-0 w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-4">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <p class="font-semibold">Need Help?</p>
+            <button class="px-4 py-2 bg-white text-blue-600 rounded hover:bg-blue-50 transition-colors duration-300">Contact Support</button>
+        </div>
+    </footer>
+
+    <!-- Booking Details Modal (Hidden by default) -->
+    <div id="bookingModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-lg p-8 max-w-2xl w-full">
+            <h2 class="text-2xl font-bold mb-4">Booking Details</h2>
+            <!-- Add modal content here -->
+            <button class="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors duration-300" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        function openModal() {
+            document.getElementById('bookingModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('bookingModal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
