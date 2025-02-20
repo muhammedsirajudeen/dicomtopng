@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="fo-dicom" Version="5.2.0" />
+    <PackageReference Include="GroupDocs.Conversion" Version="25.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.12" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>

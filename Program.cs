@@ -1,3 +1,5 @@
+using Microsoft.Extensions.FileProviders;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -15,6 +17,17 @@ var app = builder.Build();
 // }
 
 app.UseHttpsRedirection();
+
+app.UseStaticFiles(new StaticFileOptions{
+    FileProvider=new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(),"uploads")),
+    RequestPath="/dcmfiles"
+});
+
+app.UseStaticFiles(new StaticFileOptions{
+    FileProvider=new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(),"png")),
+    RequestPath="/pngfiles"
+});
+
 
 app.MapControllers();
 

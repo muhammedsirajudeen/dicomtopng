@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using FellowOakDicom;
+using System.Net;
 [ApiController]
 [Route("api/[controller]")]
 public class FileController:ControllerBase{
@@ -47,6 +48,23 @@ public class FileController:ControllerBase{
             return StatusCode(500,new {message=ResponseModel.InternalServerError,error=ex.Message});
         }
 
+    }
+    [HttpDelete("upload/{fileName}")]
+    public IActionResult Delete(string fileName){
+        try
+        {
+            
+        }
+        catch (System.Exception e)
+        {
+            return StatusCode(500,new {message=ResponseModel.InternalServerError,error=e.Message});
+        }
+        string filePath=Path.Combine(_uploadsFolder,fileName);
+        if(!System.IO.File.Exists(filePath)){
+            return NotFound(new {message=ResponseModel.NotFound});
+        }
+        System.IO.File.Delete(filePath);
+        return NoContent();
     }
     
 }
