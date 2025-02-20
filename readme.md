@@ -18,3 +18,8 @@ POST http://[domain]:[port]/api/file/upload
 <td>uploaded file</td>
 </tr>
 </table>
+
+```bash
+
+
+```
