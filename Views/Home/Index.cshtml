@@ -1,0 +1,120 @@
+@page
+@{
+    Layout = null; // Remove if using a shared layout
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex flex-col items-center min-h-screen bg-gray-100 p-6">
+
+    <h1 class="text-2xl font-bold text-gray-800 mb-6">Admin Dashboard</h1>
+    <a href="/png">view your png's</a>
+
+    <!-- File Upload Forms -->
+    <div class="bg-white p-6 rounded-lg shadow-md w-full max-w-lg">
+        <h2 class="text-lg font-semibold mb-4 text-gray-700">Upload Files</h2>
+        <form method="post" action="/api/file/uploads" enctype="multipart/form-data" class="flex items-center gap-2">
+            <div>
+                <input name="files" type="file" class="border p-2 rounded w-full text-gray-700 text-xs" />
+                <input name="files" type="file" class="border p-2 rounded w-full text-gray-700 text-xs" />
+                <input name="files" type="file" class="border p-2 rounded w-full text-gray-700 text-xs" />
+            </div>
+
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">Submit</button>
+        </form>
+
+        <h2 class="text-lg font-semibold mt-6 mb-4 text-gray-700">Upload ZIP</h2>
+        <form method="post" action="/api/file/uploads/zip" enctype="multipart/form-data" class="flex items-center gap-2">
+            <div>
+                <input name="files" type="file" class="border p-2 rounded w-full text-gray-700 text-xs" />
+                <input name="files" type="file" class="border p-2 rounded w-full text-gray-700 text-xs" />
+                <input name="files" type="file" class="border p-2 rounded w-full text-gray-700 text-xs" />
+            </div>
+            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition">Upload ZIP</button>
+        </form>
+    </div>
+    <!-- File List -->
+    <div class="bg-white p-6 rounded-lg shadow-md w-full max-w-lg mt-6">
+        <h2 class="text-lg font-semibold text-gray-700 mb-4">Uploaded Files</h2>
+        <ul id="file-list" class="list-none divide-y divide-gray-300"></ul>
+    </div>
+
+    <script>
+        async function dataFetcher() {
+            try {
+                const response = await fetch("/api/file/uploads");
+                const { message, files } = await response.json();
+                
+                if (message === 'Success' && Array.isArray(files)) {
+                    const fileList = document.getElementById("file-list");
+                    fileList.innerHTML = "";
+                    
+                    files.forEach(file => {
+                        const listItem = document.createElement("li");
+                        listItem.className = "p-3 border-b border-gray-300 flex items-center justify-between";
+
+                        const fileContainer = document.createElement("div");
+                        fileContainer.className = "flex items-center";
+
+                        const icon = document.createElement("span");
+                        icon.innerHTML = "📄";
+                        icon.className = "mr-2";
+
+                        const fileName = document.createElement("span");
+                        fileName.textContent = file;
+
+                        fileContainer.appendChild(icon);
+                        fileContainer.appendChild(fileName);
+
+                        // Delete Button
+                        const deleteButton = document.createElement("button");
+                        deleteButton.innerHTML = "❌";
+                        deleteButton.className = "ml-4 text-red-500 hover:text-red-700 transition";
+                        deleteButton.onclick = async () => {
+                            try {
+                                await fetch(`/api/file/uploads/${file}`, { method: "DELETE" });
+                                window.location.reload();
+                            } catch (error) {
+                                console.error("Error deleting file:", error);
+                            }
+                        };
+
+                        // Convert Button
+                        const convertButton = document.createElement("button");
+                        convertButton.setAttribute("data-name", file);
+                        convertButton.innerHTML = "㊗️";
+                        convertButton.className = "ml-4 text-blue-500 hover:text-blue-700 transition";
+                        convertButton.onclick = async (e) => {
+                            try {
+                                const name = e.target.getAttribute("data-name");
+                                console.log(name);
+                                const response = await fetch(`/api/png/${name}`);
+                                if (response.ok) {
+                                    window.location.href = "/png";
+                                }
+                            } catch (error) {
+                                console.log(error);
+                            }
+                        };
+
+                        listItem.appendChild(fileContainer);
+                        listItem.appendChild(convertButton);
+                        listItem.appendChild(deleteButton);
+                        fileList.appendChild(listItem);
+                    });
+                }
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        }
+        document.addEventListener("DOMContentLoaded", dataFetcher);
+    </script>
+
+</body>
+</html>

@@ -22,7 +22,8 @@ public class PngController:ControllerBase{
             string[] fileName=pathName.Split('.');
             string withoutExtension=fileName[0];
             FluentConverter.Load(filePathDcm).ConvertTo(Path.Combine(_pngFolder,$"{withoutExtension}.png")).Convert();
-            return Ok(new {message=ResponseModel.Success});
+            return Redirect("/png");
+            // return Ok(new {message=ResponseModel.Success});
         }
         catch (System.Exception e)
         {

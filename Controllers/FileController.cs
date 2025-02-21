@@ -66,8 +66,9 @@ public class FileController : ControllerBase
 
                 uploadedFiles.Add(fileName);
             }
+            return Redirect("/");
 
-            return Ok(new { message = ResponseModel.Success, files = uploadedFiles });
+            // return Ok(new { message = ResponseModel.Success, files = uploadedFiles });
         }
         catch (Exception ex)
         {
@@ -119,7 +120,7 @@ public class FileController : ControllerBase
                 ZipFile.ExtractToDirectory(filePath,_uploadsFolder);
                 
             }
-            return Ok(new { message = ResponseModel.Success });
+            return Redirect("/");
         }
         catch (System.Exception e)
         {

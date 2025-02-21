@@ -1,0 +1,69 @@
+@page
+<div class="min-h-screen bg-gray-100 flex flex-col items-center py-10">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">PNG Image Gallery</h1>
+    <div id="image-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-11/12 max-w-6xl">
+        <!-- Images will be populated here -->
+    </div>
+</div>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script>
+    async function PngFetcher() {
+        try {
+            const imageContainer = document.getElementById("image-container");
+            imageContainer.innerHTML = `<p class="text-gray-500 text-lg">No images</p>`; 
+
+            const response = await fetch("/api/png/");
+            const jsonResponse = await response.json();
+            console.log(jsonResponse);
+
+            if (!jsonResponse.files.length) {
+                imageContainer.innerHTML = `<p class="text-gray-500 text-lg">No images available.</p>`;
+                return;
+            }
+
+            imageContainer.innerHTML = ""; // Clear loading text
+
+            jsonResponse.files.forEach(file => {
+                const imgWrapper = document.createElement("div");
+                imgWrapper.className = "bg-white shadow-lg rounded-xl p-4 flex flex-col items-center hover:shadow-2xl transition duration-300";
+
+                const img = document.createElement("img");
+                img.src = `/pngfiles/${file}`;
+                img.alt = file;
+                img.className = "w-full h-48 object-cover rounded-lg mb-3";
+
+                const deleteBtn = document.createElement("button");
+                deleteBtn.textContent = "Delete";
+                deleteBtn.className = "bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded transition duration-300";
+                deleteBtn.onclick = () => deleteImage(file, imgWrapper);
+
+                imgWrapper.appendChild(img);
+                imgWrapper.appendChild(deleteBtn);
+                imageContainer.appendChild(imgWrapper);
+            });
+        } catch (error) {
+            console.error("Error fetching images:", error);
+        }
+    }
+
+    async function deleteImage(filename, imgWrapper) {
+        try {
+            const response = await fetch(`/api/png/${filename}`, {
+                method: "DELETE",
+            });
+
+            if (response.ok) {
+                imgWrapper.remove();
+                console.log(`Deleted ${filename}`);
+            } else {
+                console.error(`Failed to delete ${filename}`);
+            }
+        } catch (error) {
+            console.error("Error deleting image:", error);
+        }
+    }
+
+    PngFetcher();
+</script>
