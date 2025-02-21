@@ -10,35 +10,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Include SweetAlert2 from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="flex flex-col items-center min-h-screen bg-gray-100 p-6">
 
     <h1 class="text-2xl font-bold text-gray-800 mb-6">Admin Dashboard</h1>
-    <a href="/png">view your png's</a>
+    <a href="/png" class="text-blue-500 underline">View Your PNGs</a>
 
     <!-- File Upload Forms -->
     <div class="bg-white p-6 rounded-lg shadow-md w-full max-w-lg">
         <h2 class="text-lg font-semibold mb-4 text-gray-700">Upload Files</h2>
-        <form method="post" action="/api/file/uploads" enctype="multipart/form-data" class="flex items-center gap-2">
-            <div>
-                <input name="files" type="file" class="border p-2 rounded w-full text-gray-700 text-xs" />
-                <input name="files" type="file" class="border p-2 rounded w-full text-gray-700 text-xs" />
-                <input name="files" type="file" class="border p-2 rounded w-full text-gray-700 text-xs" />
-            </div>
-
-            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">Submit</button>
-        </form>
+        <input id="file-input" type="file" multiple class="border p-2 rounded w-full text-gray-700 text-xs mb-3">
+        <button onclick="uploadFiles()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition w-full">
+            Upload Files
+        </button>
 
         <h2 class="text-lg font-semibold mt-6 mb-4 text-gray-700">Upload ZIP</h2>
-        <form method="post" action="/api/file/uploads/zip" enctype="multipart/form-data" class="flex items-center gap-2">
-            <div>
-                <input name="files" type="file" class="border p-2 rounded w-full text-gray-700 text-xs" />
-                <input name="files" type="file" class="border p-2 rounded w-full text-gray-700 text-xs" />
-                <input name="files" type="file" class="border p-2 rounded w-full text-gray-700 text-xs" />
-            </div>
-            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition">Upload ZIP</button>
-        </form>
+        <input id="zip-input" type="file" multiple class="border p-2 rounded w-full text-gray-700 text-xs mb-3">
+        <button onclick="uploadZip()" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition w-full">
+            Upload ZIP
+        </button>
     </div>
+
     <!-- File List -->
     <div class="bg-white p-6 rounded-lg shadow-md w-full max-w-lg mt-6">
         <h2 class="text-lg font-semibold text-gray-700 mb-4">Uploaded Files</h2>
@@ -46,15 +40,75 @@
     </div>
 
     <script>
+        async function uploadFiles() {
+            const fileInput = document.getElementById("file-input");
+            if (!fileInput.files.length) {
+                Swal.fire("No files selected", "Please select at least one file", "warning");
+                return;
+            }
+
+            const formData = new FormData();
+            for (let file of fileInput.files) {
+                formData.append("files", file);
+            }
+
+            try {
+                Swal.fire({ title: "Uploading...", allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+                const response = await fetch("/api/file/uploads", {
+                    method: "POST",
+                    body: formData
+                });
+
+                if (response.ok) {
+                    Swal.fire("Success!", "Files uploaded successfully.", "success");
+                    dataFetcher(); // Refresh file list
+                } else {
+                    Swal.fire("Error", "Failed to upload files", "error");
+                }
+            } catch (error) {
+                Swal.fire("Error", "Something went wrong!", "error");
+            }
+        }
+
+        async function uploadZip() {
+            const zipInput = document.getElementById("zip-input");
+            if (!zipInput.files.length) {
+                Swal.fire("No ZIP selected", "Please select a ZIP file", "warning");
+                return;
+            }
+
+            const formData = new FormData();
+            for (let file of zipInput.files) {
+                formData.append("files", file);
+            }
+
+            try {
+                Swal.fire({ title: "Uploading ZIP...", allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+                const response = await fetch("/api/file/uploads/zip", {
+                    method: "POST",
+                    body: formData
+                });
+
+                if (response.ok) {
+                    Swal.fire("Success!", "ZIP uploaded successfully.", "success");
+                    dataFetcher(); // Refresh file list
+                } else {
+                    Swal.fire("Error", "Failed to upload ZIP", "error");
+                }
+            } catch (error) {
+                Swal.fire("Error", "Something went wrong!", "error");
+            }
+        }
+
         async function dataFetcher() {
             try {
                 const response = await fetch("/api/file/uploads");
                 const { message, files } = await response.json();
-                
+
                 if (message === 'Success' && Array.isArray(files)) {
                     const fileList = document.getElementById("file-list");
                     fileList.innerHTML = "";
-                    
+
                     files.forEach(file => {
                         const listItem = document.createElement("li");
                         listItem.className = "p-3 border-b border-gray-300 flex items-center justify-between";
@@ -79,9 +133,9 @@
                         deleteButton.onclick = async () => {
                             try {
                                 await fetch(`/api/file/uploads/${file}`, { method: "DELETE" });
-                                window.location.reload();
+                                dataFetcher(); // Refresh file list
                             } catch (error) {
-                                console.error("Error deleting file:", error);
+                                Swal.fire("Error", "Failed to delete file", "error");
                             }
                         };
 
@@ -93,13 +147,13 @@
                         convertButton.onclick = async (e) => {
                             try {
                                 const name = e.target.getAttribute("data-name");
-                                console.log(name);
                                 const response = await fetch(`/api/png/${name}`);
                                 if (response.ok) {
+                                    Swal.fire("Success!", "File converted successfully.", "success");
                                     window.location.href = "/png";
                                 }
                             } catch (error) {
-                                console.log(error);
+                                Swal.fire("Error", "Failed to convert file", "error");
                             }
                         };
 
@@ -110,9 +164,10 @@
                     });
                 }
             } catch (error) {
-                console.error("Error fetching data:", error);
+                Swal.fire("Error", "Failed to fetch uploaded files", "error");
             }
         }
+
         document.addEventListener("DOMContentLoaded", dataFetcher);
     </script>
 

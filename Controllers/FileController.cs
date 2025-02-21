@@ -61,6 +61,7 @@ public class FileController : ControllerBase
 
                 if (!DicomFile.HasValidHeader(filePath))
                 {
+                    System.IO.File.Delete(filePath);
                     return BadRequest(new { message = ResponseModel.BadRequest });
                 }
 
