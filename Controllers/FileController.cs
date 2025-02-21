@@ -8,9 +8,10 @@ public class FileController : ControllerBase
 {
     private readonly string _uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "uploads");
     private readonly string _zipFolder = Path.Combine(Directory.GetCurrentDirectory(), "zip");
-    private readonly string _extractedZip=Path.Combine(Directory.GetCurrentDirectory(),"extracted");
-    public FileController(){
-        if(!Directory.Exists(_extractedZip)) Directory.CreateDirectory(_extractedZip);
+    private readonly string _extractedZip = Path.Combine(Directory.GetCurrentDirectory(), "extracted");
+    public FileController()
+    {
+        if (!Directory.Exists(_extractedZip)) Directory.CreateDirectory(_extractedZip);
     }
     [HttpGet("uploads")]
     public IActionResult Get()
@@ -94,7 +95,6 @@ public class FileController : ControllerBase
             return StatusCode(500, new { message = ResponseModel.InternalServerError, error = e.Message });
         }
     }
-    //does not handle nested directories
     [HttpPost("uploads/zip")]
     public async Task<IActionResult> UploadDcmFromZip([FromForm] List<IFormFile> files)
     {
@@ -118,8 +118,25 @@ public class FileController : ControllerBase
                 {
                     await file.CopyToAsync(stream);
                 }
-                ZipFile.ExtractToDirectory(filePath,_uploadsFolder);
-                
+
+                var tempExtractPath = Path.Combine(_zipFolder, Guid.NewGuid().ToString());
+                Directory.CreateDirectory(tempExtractPath);
+
+                ZipFile.ExtractToDirectory(filePath, tempExtractPath);
+
+                foreach (var extractedFile in Directory.GetFiles(tempExtractPath, "*", SearchOption.AllDirectories))
+                {
+                    var destinationPath = Path.Combine(_uploadsFolder, Path.GetFileName(extractedFile));
+                    // System.Console.WriteLine(extractedFile);
+                    if(!DicomFile.HasValidHeader(extractedFile)){
+                        System.IO.File.Delete(extractedFile);
+                        return StatusCode(400,new {msg="invalid file detected"});
+
+                    }
+                    System.IO.File.Move(extractedFile, destinationPath);
+                }
+
+                Directory.Delete(tempExtractPath, true);
             }
             return Redirect("/");
         }
