@@ -17,7 +17,6 @@ builder.WebHost.ConfigureKestrel(serverOptions =>
 builder.Services.AddEndpointsApiExplorer();
 // builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
-builder.Services.AddOrchardCms();
 
 builder.Services.AddControllersWithViews();
 

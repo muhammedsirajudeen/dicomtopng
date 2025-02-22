@@ -17,6 +17,8 @@ obj/
 
 # Ignore build output
 out/
+publish
+publish.zip
 
 # Ignore NuGet packages
 *.nupkg

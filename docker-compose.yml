@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: name 
+    build: .
+    working_dir: /app
+    ports:
+      - "5169:5169"
+    volumes:
+      - .:/app
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - DOTNET_URLS=http://0.0.0.0:5169
+    dns:
+      - 8.8.8.8
+    command: ["/bin/sh", "-c", "dotnet restore && dotnet watch run"]
