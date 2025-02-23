@@ -1,8 +1,1 @@
-*.cs linguist-detectable=true
-*.csproj linguist-detectable=true
-*.sln linguist-detectable=true
-*.html linguist-detectable=false
-*.json linguist-detectable=false
-*.xml linguist-detectable=false
-*.dll linguist-generated=true
-*.cshtml linguist-detectable=false
+*.cshtml linguist-vendored
