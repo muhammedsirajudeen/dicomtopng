@@ -5,4 +5,4 @@
 *.json linguist-detectable=false
 *.xml linguist-detectable=false
 *.dll linguist-generated=true
-
+*.cshtml linguist-detectable=false
